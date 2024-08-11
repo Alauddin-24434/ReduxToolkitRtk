@@ -1,4 +1,5 @@
 # ReduxToolkitRtk with typescript react
+#  main.tsx file setup flow main.png image screenShort
 
 1. install reduxjs/toolkit
   <pre>
@@ -182,8 +183,63 @@ export const persistor = persistStore(store);
 
 </code></pre>
 
-*. main.tsx file setup flow main.png image screenShort
+9. utils/verifyToken.ts file code export verify token 
+    <pre> <code>
+      import { jwtDecode } from "jwt-decode";
+      export const verifyToken=(token:string)=>{
+      return jwtDecode(token);}
+    </code></pre>
 
+10.  how to token access login page throw import
+    
+<pre> <code>
+  import { FormEvent, useState } from 'react';
+import { useLoginMutation } from '../redux/features/auth/authApi';
+import { useAppDispatch } from '../redux/hooks';
+import { setUser } from '../redux/features/auth/authSlice';
+import { verifyToken } from '../utils/verifyToken';
+  
+      const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
+    const [login, { error}]=useLoginMutation();
 
-<pre> <code></code></pre>
+    const dispatch= useAppDispatch()
+    const handleSubmit = async (e:FormEvent) => {
+        e.preventDefault();
+        // Handle form submission (e.g., authentication logic)
+      
+
+        const userInfo={
+            email,
+            password,
+        }
+
+        const res=await login(userInfo).unwrap()
+        const user= verifyToken(res.data.accessToken);
+     
+
+        dispatch(setUser({user:user, token:res.data.accessToken}))
+
+    };
+</code></pre>
+    
+11. src/layout/ProtectedRoute.tsx
+<pre> <code>
+import { ReactNode } from "react";
+import { useAppSelector } from "../redux/hooks";
+import { useCurrentToken } from "../redux/features/auth/authSlice";
+import { Navigate } from "react-router-dom";
+const ProtectedRoute= ({children}:{children:ReactNode})=>{
+const token=useAppSelector(useCurrentToken);
+   if(!token){
+  //please add closing tag Navigate
+    Navigate to='/login' replace={true}
+  }
+ 
+    return children;
+}
+export default ProtectedRoute;
+</code></pre>
+
+    
