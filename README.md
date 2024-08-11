@@ -66,9 +66,30 @@ export const baseApi = createApi({
   }),
   endpoints: () => ({}),
 });
-
-
 </code></pre>
+
+6. features/auth/authApi this file code inject with base api
+  <pre> <code>
+    import { baseApi } from "../../api/baseApi";
+
+
+const authApi=baseApi.injectEndpoints({
+    endpoints:(builder)=>({
+        login: builder.mutation({
+            query:(userInfo)=>({
+                url:'/auth/login-user',
+                method:'POST',
+                body:userInfo,
+            })
+        })
+    })
+})
+
+
+export const {useLoginMutation}= authApi;
+  </code></pre>
+
+
 *. main.tsx file setup flow main.png image screenShort
 <pre> <code>
 
