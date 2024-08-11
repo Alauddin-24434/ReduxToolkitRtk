@@ -60,8 +60,7 @@ export const baseApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:5000/api",
 
-    // এখানে credentials: "include" করা হয়েছে ব্যাকেন্ড থেকে পাঠানো refreshToken Cookie এর ভিতরে পাঠানোর জন্য।
-    // তাই credentials: "include" অবশ্যই লিখতে হবে যদি cookie তে টোকেন পাঠানো হয়। আর কুকিতে কোন টোকেন না পাঠালে   credentials: "include", না লিখলেও চলবে।
+    // এখানে credentials: "include" করা হয়েছে ব্যাকেন্ড থেকে পাঠানো refreshToken Cookie এর ভিতরে পাঠানোর জন্য। তাই credentials: "include" অবশ্যই লিখতে হবে যদি cookie তে টোকেন পাঠানো হয়। আর কুকিতে কোন টোকেন না পাঠালে   credentials: "include", না লিখলেও চলবে।
     credentials: "include",
   }),
   endpoints: () => ({}),
@@ -89,11 +88,49 @@ const authApi=baseApi.injectEndpoints({
 export const {useLoginMutation}= authApi;
   </code></pre>
 
-
-*. main.tsx file setup flow main.png image screenShort
+7. features/auth/authSlice this file code represent redux local state 
 <pre> <code>
+  import { createSlice } from "@reduxjs/toolkit";
+import { RootState } from "../../store";
 
+type TAuthSate={
+    user:null | object;
+    token:null | string;
+}
+
+const initialState:TAuthSate={
+    user:null,
+    token:null,
+}
+
+const authSlice= createSlice({
+    name:'auth',
+    initialState,
+    reducers:{
+        setUser: (state, action)=>{
+            const {user, token}= action.payload;
+            state.user=user;
+            state.token=token;
+        },
+        logout: (state)=>{
+            state.user= null;
+            state.token=null;
+        }
+    }
+
+})
+
+export const {setUser,logout}= authSlice.actions;
+
+export default authSlice.reducer;
+// নিচের দুই লাইনের কোডগুলি লিখা হয়েছে redux এর loacl state এর auth নামক state থেকে token এবং user কে নেয়ার জন্য, সাথে ২ টি কেই  export  করা হয়েছে  অন্য ফাইল থেকে এ ২ টি কেই import করার জন্য।
+export const useCurrentToken=(state:RootState)=>state.auth.token;
+export const useCurrenUser=(state:RootState)=>state.auth.user;
 </code></pre>
 
-<pre> <code></code></pre>
+
+*. main.tsx file setup flow main.png image screenShort
+
+
+
 <pre> <code></code></pre>
