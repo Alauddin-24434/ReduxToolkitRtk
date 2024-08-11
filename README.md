@@ -69,7 +69,7 @@ export const baseApi = createApi({
 
 
 </code></pre>
-*. main.tsx file setup 
+*. main.tsx file setup flow main.png image screenShort
 <pre> <code>
 
 </code></pre>
